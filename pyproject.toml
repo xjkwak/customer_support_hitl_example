@@ -8,6 +8,8 @@ dependencies = [
     "chainlit>=2.5.5",
     "crewai[tools]>=0.102.0,<1.0.0",
     "pymysql>=1.1.1",
+    "python-telegram-bot>=22.1",
+    "slack-sdk>=3.35.0",
     "sqlalchemy",
 ]
 

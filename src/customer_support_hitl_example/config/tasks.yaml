@@ -48,7 +48,7 @@ collect_info_task:
 summarize_ticket_task:
   name: Save to Database and Create Summary
   description: >
-    This task has two critical responsibilities that must be performed in sequence:
+    This task has three critical responsibilities that must be performed in sequence:
     
     1) FIRST: Use the SaveTicketTool to save the ticket information from the ticket.json file
     to the MySQL database. This ensures all collected user data is persistently stored.
@@ -66,13 +66,17 @@ summarize_ticket_task:
        - Priority level
        - Ticket ID for reference
     
+    3) THIRD: Use the NotificationTool to send the ticket summary to Slack and/or Telegram 
+    channels. Check the environment variables for SLACK_CHANNEL and TELEGRAM_CHAT_ID to determine 
+    where to send the notifications.
+    
     Do not omit any collected information in your summary. If a field was marked as "not available,"
     explicitly mention this in the summary. Begin your response by confirming whether the database
     save operation was successful.
   expected_output: >
-    A confirmation of successful database storage followed by a comprehensive summary of ALL collected
-    ticket information, clearly formatted for support team reference. The summary must include every
-    field from the TicketInfo model that was collected, with nothing omitted.
+    A confirmation of successful database storage and notification delivery, followed by a comprehensive 
+    summary of ALL collected ticket information, clearly formatted for support team reference. 
+    The summary must include every field from the TicketInfo model that was collected, with nothing omitted.
   agent: information_summarizer
   context:
     - collect_info_task

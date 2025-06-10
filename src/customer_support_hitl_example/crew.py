@@ -1,6 +1,7 @@
 from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
 from customer_support_hitl_example.models import TicketInfo
+from customer_support_hitl_example.tools import NotificationTool
 from customer_support_hitl_example.tools.db_tool import SaveTicketTool
 from customer_support_hitl_example.tools.human_tool import HumanInputContextTool
 
@@ -41,7 +42,7 @@ class CustomerSupportHitlExample():
 	def information_summarizer(self) -> Agent:
 		return Agent(
 			config=self.agents_config['information_summarizer'],
-			tools=[SaveTicketTool()],
+			tools=[SaveTicketTool(), NotificationTool()],
 			verbose=True
 		)
 
