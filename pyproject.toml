@@ -1,0 +1,26 @@
+[project]
+name = "customer_support_hitl_example"
+version = "0.1.0"
+description = "customer-support-hitl-example using crewAI"
+authors = [{ name = "Your Name", email = "you@example.com" }]
+requires-python = ">=3.10,<3.13"
+dependencies = [
+    "chainlit>=2.5.5",
+    "crewai[tools]>=0.102.0,<1.0.0",
+    "pymysql>=1.1.1",
+    "sqlalchemy",
+]
+
+[project.scripts]
+customer_support_hitl_example = "customer_support_hitl_example.main:run"
+run_crew = "customer_support_hitl_example.main:run"
+train = "customer_support_hitl_example.main:train"
+replay = "customer_support_hitl_example.main:replay"
+test = "customer_support_hitl_example.main:test"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.crewai]
+type = "crew"
