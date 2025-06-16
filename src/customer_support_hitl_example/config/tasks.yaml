@@ -11,36 +11,12 @@
 collect_info_task:
   name: Collect Complete Ticket Information
   description: >
-    Based on the initial message from the user, collect ALL necessary information to fill out the TicketInfo model.
-    You MUST collect the following required fields:
-    - ticket_id (generate a random 6-character alphanumeric ID if not provided)
-    - subject (ask user for a brief summary of their issue)
-    - description (a detailed explanation of the problem)
-    - first_name (user's first name)
-    - last_name (user's last name)
-    - email (user's email address)
-    - device_type (e.g., laptop, desktop, mobile)
-    - browser (e.g., Chrome, Firefox, Safari)
-    - os_version (operating system and version)
-    - steps_to_reproduce (how to recreate the issue)
-    - priority (how urgent the issue is: low, medium, high)
-    
-    For optional fields:
-    - screenshot_url (mark as "not available" if not provided)
-    
-    Important guidelines:
-    1. Ask ONE question at a time in a natural, friendly tone
-    2. Wait for a response before asking the next question
-    3. Keep track of what information you've already collected
-    4. If any required field is missing, ask specifically for that information
-    5. Before finishing, verify you have all required fields
-    6. If user doesn't provide certain information after asking twice, mark it as "not available"
-    7. Store all collected values in a structured JSON format according to the TicketInfo model
-    
-    The collected information will be saved both as a JSON file and to the database in the next task.
+    Based on the initial message '{initial_message}', collect detailed information about the person by: 
+    Finding out the ticket_id, subject, description, first_name, last_name, email, device_type, browser, os_version, steps_to_reproduce,
+    priority, screenshot_url, status of the ticket. Ask questions in a natural way. 
+    Store all collected information in a structured format.
   expected_output: >
-    A complete and validated TicketInfo object containing all required fields with explicit user information.
-    Fields should be marked as "not available" only if the user explicitly cannot provide the information after being asked twice.
+    All required fields of ticket info. None can be missing.
   agent: information_collector
   output_file: ticket.json
   human_input: false
@@ -48,7 +24,7 @@ collect_info_task:
 summarize_ticket_task:
   name: Save to Database and Create Summary
   description: >
-    This task has two critical responsibilities that must be performed in sequence:
+    This task has three critical responsibilities that must be performed in sequence:
     
     1) FIRST: Use the SaveTicketTool to save the ticket information from the ticket.json file
     to the MySQL database. This ensures all collected user data is persistently stored.
@@ -66,14 +42,18 @@ summarize_ticket_task:
        - Priority level
        - Ticket ID for reference
     
+    3) THIRD: Use the NotificationToolWrapper to send the ticket summary to Slack and/or Telegram 
+    channels. Check the environment variables for SLACK_CHANNEL and TELEGRAM_CHAT_ID to determine 
+    where to send the notifications.
+    
     Do not omit any collected information in your summary. If a field was marked as "not available,"
     explicitly mention this in the summary. Begin your response by confirming whether the database
     save operation was successful.
   expected_output: >
-    A confirmation of successful database storage followed by a comprehensive summary of ALL collected
-    ticket information, clearly formatted for support team reference. The summary must include every
-    field from the TicketInfo model that was collected, with nothing omitted.
+    A confirmation of successful database storage and notification delivery, followed by a comprehensive 
+    summary of ALL collected ticket information, clearly formatted for support team reference. 
+    The summary must include every field from the TicketInfo model that was collected, with nothing omitted.
   agent: information_summarizer
   context:
     - collect_info_task
-  human_input: false
+
